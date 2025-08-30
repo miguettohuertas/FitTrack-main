@@ -18,13 +18,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # PASSO CORRIGIDO: Agora especificamos qual conjunto de regras usar.
       - name: Run Semgrep Scan
-        # Este é o passo que não está criando o arquivo
         uses: semgrep/semgrep-action@v1
-
-      # PASSO DE INVESTIGAÇÃO: Vamos listar todos os arquivos para ver o que existe
-      - name: List files after scan
-        run: ls -R
+        with:
+          config: "p/javascript"  # <-- ESTA É A LINHA QUE RESOLVE O PROBLEMA
 
       - name: Upload SARIF file for GitHub Security Alerts
         uses: github/codeql-action/upload-sarif@v3
