@@ -1,0 +1,997 @@
+<html><head><meta charset="utf-8"/><title>Relatório de Testes</title><style type="text/css">:root {
+  --text-primary: #111;
+  --text-secondary: #4f4f4f;
+  --success: #006633;
+  --success-bright: #80ffbf;
+  --danger: #cc071e;
+  --danger-bright: #fbdfe0;
+  --warning: #995c00;
+  --warning-bright: #ffeea8;
+  --panel: #eee;
+  --border: #949494;
+  --disabled: #6b6b6b;
+}
+
+html,
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  margin: 0;
+  padding: 0;
+  color: var(--text-primary);
+}
+body {
+  padding: 2rem 1rem;
+}
+.jesthtml-content {
+  margin: 0 auto;
+  max-width: 70rem;
+}
+header {
+  display: flex;
+  align-items: center;
+}
+#title {
+  margin: 0;
+  flex-grow: 1;
+}
+#logo {
+  height: 4rem;
+}
+#timestamp {
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+}
+
+#metadata-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.additional-information-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+}
+
+/** SUMMARY */
+#summary {
+  color: var(--text-primary);
+  display: flex;
+  font-family: monospace;
+  font-size: 1rem;
+}
+#summary > div {
+  margin-right: 0.5rem;
+  background: var(--panel);
+  padding: 1rem;
+  min-width: 15rem;
+}
+#summary > div:last-child {
+  margin-right: 0;
+}
+@media only screen and (max-width: 720px) {
+  #summary {
+    flex-direction: column;
+  }
+  #summary > div {
+    margin-right: 0;
+    margin-top: 1rem;
+  }
+  #summary > div:first-child {
+    margin-top: 0;
+  }
+}
+
+.summary-total {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+.summary-passed {
+  color: var(--success);
+  border-left: 0.4rem solid var(--success);
+  padding-left: 0.5rem;
+  margin-bottom: 0.15rem;
+}
+.summary-failed,
+.summary-obsolete-snapshots {
+  color: var(--danger);
+  border-left: 0.4rem solid var(--danger);
+  padding-left: 0.5rem;
+  margin-bottom: 0.15rem;
+}
+.summary-pending {
+  color: var(--warning);
+  border-left: 0.4rem solid var(--warning);
+  padding-left: 0.5rem;
+  margin-bottom: 0.15rem;
+}
+.summary-empty {
+  color: var(--disabled);
+  border-left: 0.4rem solid var(--disabled);
+  margin-bottom: 0.15rem;
+}
+
+.test-result {
+  padding: 1rem;
+  margin-bottom: 0.25rem;
+}
+.test-result:last-child {
+  border: 0;
+}
+.test-result.passed {
+  background-color: var(--success-bright);
+  color: var(--success);
+}
+.test-result.failed {
+  background-color: var(--danger-bright);
+  color: var(--danger);
+}
+.test-result.pending {
+  background-color: var(--warning-bright);
+  color: var(--warning);
+}
+
+.test-info {
+  display: flex;
+  justify-content: space-between;
+}
+.test-suitename {
+  width: 20%;
+  text-align: left;
+  font-weight: bold;
+  word-break: break-word;
+}
+.test-title {
+  width: 40%;
+  text-align: left;
+  font-style: italic;
+}
+.test-status {
+  width: 20%;
+  text-align: right;
+}
+.test-duration {
+  width: 10%;
+  text-align: right;
+  font-size: 0.85rem;
+}
+
+.failureMessages {
+  padding: 0 1rem;
+  margin-top: 1rem;
+  border-top: 1px dashed var(--danger);
+}
+.failureMessages.suiteFailure {
+  border-top: none;
+}
+.failureMsg {
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+}
+
+.suite-container {
+  margin-bottom: 1rem;
+}
+.suite-info {
+  padding: 1rem;
+  background-color: var(--panel);
+  color: var(--text-secondary);
+  border: 0.15rem solid;
+  border-color: var(--panel);
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+.suite-info:hover {
+  border-color: var(--border);
+  cursor: pointer;
+}
+.suite-info .suite-path {
+  word-break: break-all;
+  flex-grow: 1;
+  font-family: monospace;
+  font-size: 1rem;
+}
+.suite-info .suite-time {
+  margin-left: 1rem;
+  padding: 0.2rem 0.3rem;
+  font-size: 0.85rem;
+}
+.suite-info .suite-time.warn {
+  background-color: var(--danger);
+  color: #fff;
+}
+.suite-info:before {
+  content: "\2303";
+  display: inline-block;
+  margin-right: 1rem;
+  transform: rotate(180deg) translateY(0.15rem);
+}
+.suite-container[open] .suite-info:before {
+  transform: rotate(0deg) translateY(0.15rem);
+}
+
+/* CONSOLE LOGS */
+.suite-consolelog {
+  margin-bottom: 0.25rem;
+  padding: 1rem;
+  background-color: var(--panel);
+}
+.suite-consolelog-header {
+  font-weight: bold;
+}
+.suite-consolelog-item {
+  padding: 0.5rem;
+}
+.suite-consolelog-item pre {
+  margin: 0.5rem 0;
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+}
+.suite-consolelog-item-origin {
+  color: var(--text-secondary);
+  font-weight: bold;
+}
+.suite-consolelog-item-message {
+  color: var(--text-primary);
+  font-size: 1rem;
+  padding: 0 0.5rem;
+}
+
+/* OBSOLETE SNAPSHOTS */
+.suite-obsolete-snapshots {
+  margin-bottom: 0.25rem;
+  padding: 1rem;
+  background-color: var(--danger-bright);
+  color: var(--danger);
+}
+.suite-obsolete-snapshots-header {
+  font-weight: bold;
+}
+.suite-obsolete-snapshots-item {
+  padding: 0.5rem;
+}
+.suite-obsolete-snapshots-item pre {
+  margin: 0.5rem 0;
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+}
+.suite-obsolete-snapshots-item-message {
+  color: var(--text-primary);
+  font-size: 1rem;
+  padding: 0 0.5rem;
+}
+</style></head><body><main class="jesthtml-content"><header><h1 id="title">Relatório de Testes</h1></header><section id="metadata-container"><div id="timestamp">Started: 2025-07-03 21:34:21</div><div id="summary"><div id="suite-summary"><div class="summary-total">Suites (26)</div><div class="summary-passed ">4 passed</div><div class="summary-failed ">22 failed</div><div class="summary-pending  summary-empty">0 pending</div></div><div id="test-summary"><div class="summary-total">Tests (156)</div><div class="summary-passed ">80 passed</div><div class="summary-failed ">76 failed</div><div class="summary-pending  summary-empty">0 pending</div></div></div></section><details id="suite-1" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/FuncoesUtil.unit.test.js</div><div class="suite-time">0.38s</div></summary><div class="suite-tests"><div class="test-result passed"><div class="test-info"><div class="test-suitename">FuncoesUtil &gt; emailValido</div><div class="test-title">deve retornar true para email válido</div><div class="test-status">passed</div><div class="test-duration">0.005s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">FuncoesUtil &gt; emailValido</div><div class="test-title">deve retornar false para email inválido</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">FuncoesUtil &gt; converterMinutosParaTempo</div><div class="test-title">deve converter corretamente minutos para HH:mm:ss</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">FuncoesUtil &gt; existeArquivo</div><div class="test-title">deve retornar true se o arquivo existir</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">FuncoesUtil &gt; existeArquivo</div><div class="test-title">deve retornar false se o arquivo não existir</div><div class="test-status">passed</div><div class="test-duration">0.002s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">FuncoesUtil &gt; fotoValidaParaRemover</div><div class="test-title">deve retornar true para caminho de imagem válido</div><div class="test-status">passed</div><div class="test-duration"> </div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">FuncoesUtil &gt; fotoValidaParaRemover</div><div class="test-title">deve retornar false para avatar padrão</div><div class="test-status">passed</div><div class="test-duration"> </div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">FuncoesUtil &gt; removerFoto</div><div class="test-title">deve chamar removeImagem se a foto for válida</div><div class="test-status">passed</div><div class="test-duration">0.002s</div></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">FuncoesUtil &gt; removerFoto</div><div class="test-title">não deve chamar removeImagem se a foto for inválida</div><div class="test-status">failed</div><div class="test-duration">0.001s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(jest.fn()).not.toHaveBeenCalled()
+
+Expected number of calls: 0
+Received number of calls: 1
+
+1: "/images/uploads/foto.png"
+    at Object.toHaveBeenCalled (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/FuncoesUtil.unit.test.js:64:44)
+    at Promise.then.completed (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:252:3)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:126:9)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:121:9)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:121:9)
+    at run (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/testWorker.js:106:12)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">FuncoesUtil &gt; removeImagem</div><div class="test-title">deve tentar remover o arquivo com fs.unlink</div><div class="test-status">failed</div><div class="test-duration">0.002s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+Expected: "/home/fernando/projetos/projetos_faculdade/node_projects/src/public/images/uploads/minha_foto.jpg", Any&lt;Function&gt;
+
+Number of calls: 0
+    at Object.toHaveBeenCalledWith (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/FuncoesUtil.unit.test.js:78:26)
+    at Promise.then.completed (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:252:3)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:126:9)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:121:9)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:121:9)
+    at run (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/testWorker.js:106:12)</pre></div></div></div></details><details id="suite-2" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/TreinoFactory.unit.test.js</div><div class="suite-time">0.391s</div></summary><div class="suite-tests"><div class="test-result failed"><div class="test-info"><div class="test-suitename">TreinoFactory.buildFromRows</div><div class="test-title">deve construir um treino com um exercício e uma categoria</div><div class="test-status">failed</div><div class="test-duration">0.01s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: "15:00"
+Received: undefined
+    at Object.toBe (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/TreinoFactory.unit.test.js:46:31)
+    at Promise.then.completed (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:252:3)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:126:9)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:121:9)
+    at run (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/testWorker.js:106:12)</pre></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">TreinoFactory.buildFromRows</div><div class="test-title">deve adicionar vários exercícios a um mesmo treino</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">TreinoFactory.buildFromRows</div><div class="test-title">deve adicionar múltiplas categorias a um mesmo exercício sem duplicar</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">TreinoFactory.buildFromRows</div><div class="test-title">deve retornar lista vazia se nenhuma linha for fornecida</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div></div></details><details id="suite-3" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/AvaliacaoService.test.js</div><div class="suite-time">0.436s</div></summary><div class="suite-tests"><div class="test-result passed"><div class="test-info"><div class="test-suitename">AvaliacaoService &gt; avaliarTreino</div><div class="test-title">deve lançar erro se cliente não estiver autenticado</div><div class="test-status">passed</div><div class="test-duration">0.015s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">AvaliacaoService &gt; avaliarTreino</div><div class="test-title">deve lançar erro se treino não for informado</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">AvaliacaoService &gt; avaliarTreino</div><div class="test-title">deve lançar erro se nota for inválida</div><div class="test-status">passed</div><div class="test-duration">0.002s</div></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">AvaliacaoService &gt; avaliarTreino</div><div class="test-title">deve criar avaliação com dados válidos</div><div class="test-status">failed</div><div class="test-duration">0.004s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: "Ótimo treino"
+Received: undefined
+    at Object.toBe (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/AvaliacaoService.test.js:33:42)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</pre></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">AvaliacaoService &gt; listarAvaliacoesPorTreino</div><div class="test-title">deve retornar lista de avaliações do DAO</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div></div></details><details id="suite-4" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/ExercicioService.unit.test.js</div><div class="suite-time">0.433s</div></summary><div class="suite-tests"><div class="test-result failed"><div class="test-info"><div class="test-suitename">ExercicioService - Unit &gt; listarExercicios</div><div class="test-title">deve listar exercícios corretamente</div><div class="test-status">failed</div><div class="test-duration">0.006s</div></div><div class="failureMessages"> <pre class="failureMsg">TypeError: Cannot read properties of undefined (reading 'listarExercicios')
+    at Object.listarExercicios (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/ExercicioService.unit.test.js:25:41)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</pre></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">ExercicioService - Unit &gt; criarExercicio</div><div class="test-title">deve lançar erro se usuário não for administrador</div><div class="test-status">passed</div><div class="test-duration">0.004s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">ExercicioService - Unit &gt; criarExercicio</div><div class="test-title">deve lançar erro se dados obrigatórios estiverem ausentes</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">ExercicioService - Unit &gt; criarExercicio</div><div class="test-title">deve lançar erro se título já estiver cadastrado</div><div class="test-status">passed</div><div class="test-duration">0.003s</div></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">ExercicioService - Unit &gt; criarExercicio</div><div class="test-title">deve criar exercício com sucesso</div><div class="test-status">failed</div><div class="test-duration">0.001s</div></div><div class="failureMessages"> <pre class="failureMsg">TypeError: Cannot read properties of undefined (reading 'inserirExercicio')
+    at Object.inserirExercicio (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/ExercicioService.unit.test.js:60:41)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</pre></div></div></div></details><details id="suite-5" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/CategoriaDao.test.js</div><div class="suite-time">0.442s</div></summary><div class="suite-tests"><div class="test-result failed"><div class="test-info"><div class="test-suitename">CT-007 &gt; inserirCategoria</div><div class="test-title">Deve retornar novo id</div><div class="test-status">failed</div><div class="test-duration">0.004s</div></div><div class="failureMessages"> <pre class="failureMsg">TypeError: conexao.end is not a function
+    at CategoriaDao.end [as inserirCategoria] (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/dao/CategoriaDao.js:27:21)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at Object.&lt;anonymous&gt; (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/CategoriaDao.test.js:23:31)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">CT-019 &gt; listarCategorias</div><div class="test-title">Deve retornar array de CategoriaModel</div><div class="test-status">failed</div><div class="test-duration">0.001s</div></div><div class="failureMessages"> <pre class="failureMsg">TypeError: conexao.end is not a function
+    at CategoriaDao.end [as listarCategorias] (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/dao/CategoriaDao.js:17:21)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at Object.&lt;anonymous&gt; (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/CategoriaDao.test.js:48:28)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">CT-019 &gt; buscarPorTitulo</div><div class="test-title">Deve retornar um objeto CategoriaModel</div><div class="test-status">failed</div><div class="test-duration"> </div></div><div class="failureMessages"> <pre class="failureMsg">TypeError: conexao.end is not a function
+    at CategoriaDao.end [as buscarPorTitulo] (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/dao/CategoriaDao.js:42:21)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at Object.&lt;anonymous&gt; (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/CategoriaDao.test.js:58:31)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">CT-019 &gt; buscarPorTitulo</div><div class="test-title">Deve retornar null</div><div class="test-status">failed</div><div class="test-duration">0.001s</div></div><div class="failureMessages"> <pre class="failureMsg">TypeError: conexao.end is not a function
+    at CategoriaDao.end [as buscarPorTitulo] (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/dao/CategoriaDao.js:42:21)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at Object.&lt;anonymous&gt; (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/CategoriaDao.test.js:65:31)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">CT-005 &gt; editarCategoria</div><div class="test-title">Deve retornar true</div><div class="test-status">failed</div><div class="test-duration">0.001s</div></div><div class="failureMessages"> <pre class="failureMsg">TypeError: conexao.end is not a function
+    at CategoriaDao.end [as editarCategoria] (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/dao/CategoriaDao.js:53:21)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at Object.&lt;anonymous&gt; (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/CategoriaDao.test.js:99:31)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">CT-005 &gt; editarCategoria</div><div class="test-title">Deve retornar false</div><div class="test-status">failed</div><div class="test-duration"> </div></div><div class="failureMessages"> <pre class="failureMsg">TypeError: conexao.end is not a function
+    at CategoriaDao.end [as editarCategoria] (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/dao/CategoriaDao.js:53:21)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at Object.&lt;anonymous&gt; (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/CategoriaDao.test.js:104:31)</pre></div></div></div></details><details id="suite-6" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/AdministradorService.unit.test.js</div><div class="suite-time">0.459s</div></summary><div class="suite-tests"><div class="test-result passed"><div class="test-info"><div class="test-suitename">AdministradorService - Unitários</div><div class="test-title">validaDadosLogin - email vazio</div><div class="test-status">passed</div><div class="test-duration">0.02s</div></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">AdministradorService - Unitários</div><div class="test-title">validaDadosLogin - senha vazia</div><div class="test-status">failed</div><div class="test-duration">0.016s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(received).toThrow(expected)
+
+Expected substring: "Senha deve estar preenchida!"
+Received message:   "Email inválido!"
+
+      171 |         
+      172 |         if(this.emailInvalido(email)){
+    &gt; 173 |             throw new Error("Email inválido!");
+          |                   ^
+      174 |         }
+      175 |         
+      176 |         if(this.senhaVazia(senha)){
+
+      at AdministradorService.validaDadosLogin (service/AdministradorService.js:173:19)
+      at validaDadosLogin (teste/AdministradorService.unit.test.js:19:26)
+      at Object.&lt;anonymous&gt; (node_modules/expect/build/toThrowMatchers.js:74:11)
+      at Object.throwingMatcher [as toThrow] (node_modules/expect/build/index.js:320:21)
+      at Object.toThrow (teste/AdministradorService.unit.test.js:19:67)
+    at Object.toThrow (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/AdministradorService.unit.test.js:19:67)
+    at Promise.then.completed (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:252:3)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:126:9)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:121:9)
+    at run (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/testWorker.js:106:12)</pre></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">AdministradorService - Unitários</div><div class="test-title">validarDados - email inválido</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">AdministradorService - Unitários</div><div class="test-title">validarDados - senha muito longa</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">AdministradorService - Unitários</div><div class="test-title">dadosCorrespondem - dados corretos</div><div class="test-status">passed</div><div class="test-duration"> </div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">AdministradorService - Unitários</div><div class="test-title">dadosCorrespondem - senha incorreta</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">AdministradorService - Unitários</div><div class="test-title">emailVazio - deve retornar true para valores inválidos</div><div class="test-status">failed</div><div class="test-duration">0.002s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: true
+Received: false
+    at Object.toBe (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/AdministradorService.unit.test.js:44:38)
+    at Promise.then.completed (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:252:3)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:126:9)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:121:9)
+    at run (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/testWorker.js:106:12)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">AdministradorService - Unitários</div><div class="test-title">senhaVazia - deve retornar true para valores inválidos</div><div class="test-status">failed</div><div class="test-duration">0.002s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: true
+Received: false
+    at Object.toBe (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/AdministradorService.unit.test.js:49:43)
+    at Promise.then.completed (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:252:3)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:126:9)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:121:9)
+    at run (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/testWorker.js:106:12)</pre></div></div></div></details><details id="suite-7" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/database.test.js</div><div class="suite-time">0.057s</div></summary><div class="suite-tests"><div class="test-result passed"><div class="test-info"><div class="test-suitename">CT-020 &gt; conectarBD</div><div class="test-title">deve retornar a conexão simulada</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div></div></details><details id="suite-8" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/AvaliacaoDao.unit.test.js</div><div class="suite-time">0.052s</div></summary><div class="suite-tests"><div class="test-result passed"><div class="test-info"><div class="test-suitename">AvaliacaoDao &gt; inserirOuAtualizar</div><div class="test-title">deve inserir ou atualizar avaliação e retornar resultado</div><div class="test-status">passed</div><div class="test-duration">0.003s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">AvaliacaoDao &gt; buscarPorTreino</div><div class="test-title">deve retornar lista de AvaliacaoModel para treino informado</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">AvaliacaoDao &gt; buscarPorClienteETreino</div><div class="test-title">deve retornar AvaliacaoModel quando encontrar dados</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">AvaliacaoDao &gt; buscarPorClienteETreino</div><div class="test-title">deve retornar null se nenhum dado for encontrado</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">AvaliacaoDao &gt; calcularMediaPorTreino</div><div class="test-title">deve retornar média das avaliações do treino</div><div class="test-status">passed</div><div class="test-duration"> </div></div></div></div></details><details id="suite-9" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/CategoriaService.int.test.js</div><div class="suite-time">0.509s</div></summary><div class="suite-tests"><div class="test-result failed"><div class="test-info"><div class="test-suitename">CategoriaService - Testes de Integração</div><div class="test-title">criarCategoria cria nova categoria real</div><div class="test-status">failed</div><div class="test-duration">0.058s</div></div><div class="failureMessages"> <pre class="failureMsg">TypeError: dao.deletarCategoria is not a function
+    at Object.deletarCategoria (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/CategoriaService.int.test.js:18:19)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">CategoriaService - Testes de Integração</div><div class="test-title">editarCategoria altera título da categoria</div><div class="test-status">failed</div><div class="test-duration">0.024s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: Data too long for column 'titulo_cat' at row 1
+    at PromiseConnection.query (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/mysql2/lib/promise/connection.js:29:22)
+    at CategoriaDao.query [as inserirCategoria] (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/dao/CategoriaDao.js:24:47)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at CategoriaService.criarCategoria (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/service/CategoriaService.js:23:24)
+    at Object.&lt;anonymous&gt; (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/CategoriaService.int.test.js:36:23)</pre><pre class="failureMsg">TypeError: dao.deletarCategoria is not a function
+    at Object.deletarCategoria (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/CategoriaService.int.test.js:18:19)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</pre></div></div></div></details><details id="suite-10" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/ComentarioDao.unit.test.js</div><div class="suite-time">0.048s</div></summary><div class="suite-tests"><div class="test-result passed"><div class="test-info"><div class="test-suitename">ComentarioDao - Unitário &gt; inserirComentario</div><div class="test-title">deve inserir comentário e retornar insertId</div><div class="test-status">passed</div><div class="test-duration">0.002s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">ComentarioDao - Unitário &gt; listarPorTreino</div><div class="test-title">deve retornar lista de ComentarioModel com dados do banco</div><div class="test-status">passed</div><div class="test-duration">0.002s</div></div></div></div></details><details id="suite-11" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/AvaliacaoDao.int.test.js</div><div class="suite-time">0.54s</div></summary><div class="suite-tests"><div class="test-result failed"><div class="test-info"><div class="test-suitename">AvaliacaoDao - Integração com banco de dados</div><div class="test-title">inserirOuAtualizar deve inserir nova avaliação</div><div class="test-status">failed</div><div class="test-duration">0.019s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: Cannot add or update a child row: a foreign key constraint fails (`fittrack`.`avaliacao`, CONSTRAINT `avaliacao_ibfk_1` FOREIGN KEY (`cliente`) REFERENCES `cliente` (`cod_cli`))
+    at PromiseConnection.query (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/mysql2/lib/promise/connection.js:29:22)
+    at AvaliacaoDao.query [as inserirOuAtualizar] (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/dao/AvaliacaoDao.js:8:47)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at Object.&lt;anonymous&gt; (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/AvaliacaoDao.int.test.js:29:23)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">AvaliacaoDao - Integração com banco de dados</div><div class="test-title">inserirOuAtualizar deve atualizar se já existir</div><div class="test-status">failed</div><div class="test-duration">0.012s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: Cannot add or update a child row: a foreign key constraint fails (`fittrack`.`avaliacao`, CONSTRAINT `avaliacao_ibfk_1` FOREIGN KEY (`cliente`) REFERENCES `cliente` (`cod_cli`))
+    at PromiseConnection.query (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/mysql2/lib/promise/connection.js:29:22)
+    at AvaliacaoDao.query [as inserirOuAtualizar] (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/dao/AvaliacaoDao.js:8:47)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at Object.&lt;anonymous&gt; (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/AvaliacaoDao.int.test.js:38:23)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">AvaliacaoDao - Integração com banco de dados</div><div class="test-title">buscarPorClienteETreino deve retornar avaliação existente</div><div class="test-status">failed</div><div class="test-duration">0.009s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(received).toBeInstanceOf(expected)
+
+Expected constructor: AvaliacaoModel
+
+Received value has no prototype
+Received value: null
+    at Object.toBeInstanceOf (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/AvaliacaoDao.int.test.js:47:23)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</pre></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">AvaliacaoDao - Integração com banco de dados</div><div class="test-title">buscarPorClienteETreino deve retornar null para dados inexistentes</div><div class="test-status">passed</div><div class="test-duration">0.007s</div></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">AvaliacaoDao - Integração com banco de dados</div><div class="test-title">buscarPorTreino deve retornar lista de avaliações</div><div class="test-status">failed</div><div class="test-duration">0.007s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: Cannot add or update a child row: a foreign key constraint fails (`fittrack`.`avaliacao`, CONSTRAINT `avaliacao_ibfk_1` FOREIGN KEY (`cliente`) REFERENCES `cliente` (`cod_cli`))
+    at PromiseConnection.query (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/mysql2/lib/promise/connection.js:29:22)
+    at AvaliacaoDao.query [as inserirOuAtualizar] (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/dao/AvaliacaoDao.js:8:47)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at Object.&lt;anonymous&gt; (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/AvaliacaoDao.int.test.js:59:5)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">AvaliacaoDao - Integração com banco de dados</div><div class="test-title">calcularMediaPorTreino deve retornar média correta</div><div class="test-status">failed</div><div class="test-duration">0.016s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: "number"
+Received: "object"
+    at Object.toBe (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/AvaliacaoDao.int.test.js:69:26)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</pre></div></div></div></details><details id="suite-12" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/ComentarioService.test.js</div><div class="suite-time">0.089s</div></summary><div class="suite-tests"><div class="test-result passed"><div class="test-info"><div class="test-suitename">ComentarioService &gt; criarComentario</div><div class="test-title">deve lançar erro se cliente não estiver autenticado</div><div class="test-status">passed</div><div class="test-duration">0.006s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">ComentarioService &gt; criarComentario</div><div class="test-title">deve lançar erro se treino não for informado</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">ComentarioService &gt; criarComentario</div><div class="test-title">deve lançar erro se texto for vazio</div><div class="test-status">passed</div><div class="test-duration"> </div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">ComentarioService &gt; criarComentario</div><div class="test-title">deve criar comentário com dados válidos</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">ComentarioService &gt; listarComentariosPorTreino</div><div class="test-title">deve retornar lista de comentários do DAO</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div></div></details><details id="suite-13" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/CategoriaService.unit.test.js</div><div class="suite-time">0.513s</div></summary><div class="suite-tests"><div class="test-result failed"><div class="test-info"><div class="test-suitename">CategoriaService - Testes Unitários &gt; listarCategorias</div><div class="test-title">deve retornar lista de categorias</div><div class="test-status">failed</div><div class="test-duration">0.007s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(jest.fn()).toHaveBeenCalled()
+
+Expected number of calls: &gt;= 1
+Received number of calls:    0
+    at Object.toHaveBeenCalled (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/CategoriaService.unit.test.js:25:36)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">CategoriaService - Testes Unitários &gt; criarCategoria</div><div class="test-title">deve criar categoria com título válido</div><div class="test-status">failed</div><div class="test-duration">0.001s</div></div><div class="failureMessages"> <pre class="failureMsg">TypeError: Cannot read properties of undefined (reading 'some')
+    at CategoriaService.some [as criarCategoria] (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/service/CategoriaService.js:18:24)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at Object.&lt;anonymous&gt; (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/CategoriaService.unit.test.js:42:25)</pre></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">CategoriaService - Testes Unitários &gt; criarCategoria</div><div class="test-title">deve lançar erro se título for vazio</div><div class="test-status">passed</div><div class="test-duration">0.004s</div></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">CategoriaService - Testes Unitários &gt; criarCategoria</div><div class="test-title">deve lançar erro se categoria já existir</div><div class="test-status">failed</div><div class="test-duration">0.015s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(received).rejects.toThrow(expected)
+
+Expected substring: "Já existe uma categoria com esse nome."
+Received message:   "Cannot read properties of undefined (reading 'some')"
+
+      16 |         const categorias = await dao.listarCategorias();
+      17 |
+    &gt; 18 |         if (categorias.some(cat =&gt; cat.titulo.toLowerCase() === titulo.trim().toLowerCase())) {
+         |                        ^
+      19 |             throw new Error('Já existe uma categoria com esse nome.');
+      20 |         }
+      21 |
+
+      at CategoriaService.some [as criarCategoria] (service/CategoriaService.js:18:24)
+      at Object.&lt;anonymous&gt; (teste/CategoriaService.unit.test.js:59:7)
+    at Object.toThrow (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/expect/build/index.js:218:22)
+    at Object.toThrow (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/CategoriaService.unit.test.js:59:60)
+    at Promise.then.completed (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:252:3)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:126:9)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:121:9)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:121:9)
+    at run (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/testWorker.js:106:12)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">CategoriaService - Testes Unitários &gt; editarCategoria</div><div class="test-title">deve editar categoria com título válido e código</div><div class="test-status">failed</div><div class="test-duration">0.001s</div></div><div class="failureMessages"> <pre class="failureMsg">TypeError: Cannot read properties of undefined (reading 'mockResolvedValue')
+    at Object.mockResolvedValue (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/CategoriaService.unit.test.js:67:32)
+    at Promise.then.completed (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:252:3)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:126:9)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:121:9)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:121:9)
+    at run (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/testWorker.js:106:12)</pre></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">CategoriaService - Testes Unitários &gt; editarCategoria</div><div class="test-title">deve lançar erro se novo título for vazio</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">CategoriaService - Testes Unitários &gt; editarCategoria</div><div class="test-title">deve lançar erro se título já existir para outro código</div><div class="test-status">failed</div><div class="test-duration"> </div></div><div class="failureMessages"> <pre class="failureMsg">TypeError: Cannot read properties of undefined (reading 'mockResolvedValue')
+    at Object.mockResolvedValue (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/CategoriaService.unit.test.js:85:32)
+    at Promise.then.completed (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:252:3)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:126:9)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:121:9)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:121:9)
+    at run (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/testWorker.js:106:12)</pre></div></div></div></details><details id="suite-14" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/example.spec.js</div><div class="suite-time">0s</div></summary><div class="suite-tests"/></details><details id="suite-15" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/tests-examples/demo-todo-app.spec.js</div><div class="suite-time">0s</div></summary><div class="suite-tests"/></details><details id="suite-16" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/ExercicioService.int.test.js</div><div class="suite-time">0.579s</div></summary><div class="suite-tests"><div class="test-result failed"><div class="test-info"><div class="test-suitename">ExercicioService - Integração</div><div class="test-title">deve criar exercício novo com sucesso</div><div class="test-status">failed</div><div class="test-duration">0.061s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: Column 'titulo_exe' cannot be null
+    at PromiseConnection.query (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/mysql2/lib/promise/connection.js:29:22)
+    at ExercicioDao.query [as inserirExercicio] (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/dao/ExercicioDao.js:22:47)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at ExercicioService.criarExercicio (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/service/ExercicioService.js:29:24)
+    at Object.&lt;anonymous&gt; (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/ExercicioService.int.test.js:33:27)</pre><pre class="failureMsg">TypeError: Cannot read properties of undefined (reading 'startsWith')
+    at Object.startsWith (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/ExercicioService.int.test.js:16:26)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">ExercicioService - Integração</div><div class="test-title">listarExercicios retorna array de exercícios</div><div class="test-status">failed</div><div class="test-duration">0.01s</div></div><div class="failureMessages"> <pre class="failureMsg">TypeError: Cannot read properties of undefined (reading 'startsWith')
+    at Object.startsWith (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/ExercicioService.int.test.js:16:26)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">ExercicioService - Integração</div><div class="test-title">não deve criar exercício com título duplicado</div><div class="test-status">failed</div><div class="test-duration">0.019s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: Column 'titulo_exe' cannot be null
+    at PromiseConnection.query (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/mysql2/lib/promise/connection.js:29:22)
+    at ExercicioDao.query [as inserirExercicio] (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/dao/ExercicioDao.js:22:47)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at ExercicioService.criarExercicio (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/service/ExercicioService.js:29:24)
+    at Object.&lt;anonymous&gt; (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/ExercicioService.int.test.js:53:9)</pre><pre class="failureMsg">TypeError: Cannot read properties of undefined (reading 'startsWith')
+    at Object.startsWith (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/ExercicioService.int.test.js:16:26)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</pre></div></div></div></details><details id="suite-17" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/CategoriaExercicioService.test.js</div><div class="suite-time">0s</div></summary><div class="suite-tests"/></details><details id="suite-18" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/e2e-tests/test-example.test.js</div><div class="suite-time">0s</div></summary><div class="suite-tests"/></details><details id="suite-19" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/TreinoDao.unit.test.js</div><div class="suite-time">0.2s</div></summary><div class="suite-tests"><div class="test-result failed"><div class="test-info"><div class="test-suitename">TreinoDao - testes unitários &gt; buscarPorId</div><div class="test-title">deve retornar sucesso e rows quando encontrar dados</div><div class="test-status">failed</div><div class="test-duration">0.001s</div></div><div class="failureMessages"> <pre class="failureMsg">TypeError: Cannot read properties of undefined (reading 'end')
+    at TreinoDao.end [as buscarPorId] (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/dao/TreinoDao.js:31:34)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at Object.&lt;anonymous&gt; (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/TreinoDao.unit.test.js:33:22)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">TreinoDao - testes unitários &gt; buscarPorId</div><div class="test-title">deve retornar falso quando não encontrar dados</div><div class="test-status">failed</div><div class="test-duration">0.002s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: false
+Received: true
+    at Object.toBe (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/TreinoDao.unit.test.js:45:30)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">TreinoDao - testes unitários &gt; buscarPorId</div><div class="test-title">deve retornar erro em caso de exceção</div><div class="test-status">failed</div><div class="test-duration">0.001s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(received).toMatch(expected)
+
+Expected pattern: /Houve algum erro/
+Received string:  "Nenhum dado encontrado"
+    at Object.toMatch (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/TreinoDao.unit.test.js:55:31)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">TreinoDao - testes unitários &gt; inserir</div><div class="test-title">deve retornar sucesso com novoId quando inserir</div><div class="test-status">failed</div><div class="test-duration">0.002s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+Expected: "INSERT INTO treino(descricao_tre, titulo_tre) values (?,?);", ["desc", "titulo"]
+
+Number of calls: 0
+    at Object.toHaveBeenCalledWith (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/TreinoDao.unit.test.js:69:33)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">TreinoDao - testes unitários &gt; inserir</div><div class="test-title">deve retornar falso quando insertId não existe</div><div class="test-status">failed</div><div class="test-duration">0.001s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(received).toMatch(expected)
+
+Expected pattern: /Não foi possível inserir/
+Received string:  "Houve algum erro durante execução"
+    at Object.toMatch (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/TreinoDao.unit.test.js:86:31)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</pre></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">TreinoDao - testes unitários &gt; inserir</div><div class="test-title">deve retornar erro ao falhar na query</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">TreinoDao - testes unitários &gt; atualizar</div><div class="test-title">deve retornar sucesso quando affectedRows &gt; 0</div><div class="test-status">failed</div><div class="test-duration">0.01s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(received).toEqual(expected) // deep equality
+
+- Expected  - 1
++ Received  + 3
+
+  Object {
+-   "sucesso": true,
++   "erro": [Error: Falha na query],
++   "mensagem": "Erro ao atualizar dados.",
++   "sucesso": false,
+  }
+    at Object.toEqual (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/TreinoDao.unit.test.js:111:22)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">TreinoDao - testes unitários &gt; atualizar</div><div class="test-title">deve retornar falso quando nenhuma linha afetada</div><div class="test-status">failed</div><div class="test-duration"> </div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: false
+Received: true
+    at Object.toBe (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/TreinoDao.unit.test.js:122:30)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">TreinoDao - testes unitários &gt; atualizar</div><div class="test-title">deve retornar erro em caso de exceção</div><div class="test-status">failed</div><div class="test-duration">0.006s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(received).toMatch(expected)
+
+Expected pattern: /Erro ao atualizar/
+Received string:  "Nenhuma linha foi alterada."
+    at Object.toMatch (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/TreinoDao.unit.test.js:135:31)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">TreinoDao - testes unitários &gt; deletar</div><div class="test-title">deve retornar sucesso quando affectedRows &gt; 0</div><div class="test-status">failed</div><div class="test-duration">0.002s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(received).toEqual(expected) // deep equality
+
+- Expected  - 1
++ Received  + 3
+
+  Object {
+-   "sucesso": true,
++   "erro": [Error: Erro],
++   "mensagem": "Falha ao deletar treino",
++   "sucesso": false,
+  }
+    at Object.toEqual (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/TreinoDao.unit.test.js:149:22)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">TreinoDao - testes unitários &gt; deletar</div><div class="test-title">deve retornar falso quando nenhuma linha deletada</div><div class="test-status">failed</div><div class="test-duration">0.003s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: false
+Received: true
+    at Object.toBe (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/TreinoDao.unit.test.js:160:30)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">TreinoDao - testes unitários &gt; deletar</div><div class="test-title">deve retornar erro em caso de exceção</div><div class="test-status">failed</div><div class="test-duration">0.001s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(received).toMatch(expected)
+
+Expected pattern: /Falha ao deletar/
+Received string:  "Nenhuma linha foi deletada."
+    at Object.toMatch (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/TreinoDao.unit.test.js:173:31)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">TreinoDao - testes unitários &gt; vincularExercicios</div><div class="test-title">deve retornar sucesso e novosIds quando affectedRows &gt; 0</div><div class="test-status">failed</div><div class="test-duration">0.001s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: true
+Received: false
+    at Object.toBe (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/TreinoDao.unit.test.js:192:30)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">TreinoDao - testes unitários &gt; vincularExercicios</div><div class="test-title">deve retornar falso quando affectedRows = 0</div><div class="test-status">failed</div><div class="test-duration">0.001s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: false
+Received: true
+    at Object.toBe (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/TreinoDao.unit.test.js:209:30)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">TreinoDao - testes unitários &gt; vincularExercicios</div><div class="test-title">deve retornar erro em exceção</div><div class="test-status">failed</div><div class="test-duration">0.011s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(received).toMatch(expected)
+
+Expected pattern: /Erro inesperado/
+Received string:  "Falha ao inserir exercicios ao treino."
+    at Object.toMatch (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/TreinoDao.unit.test.js:224:31)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">TreinoDao - testes unitários &gt; removerVinculoExercicio</div><div class="test-title">deve retornar sucesso quando affectedRows &gt; 0</div><div class="test-status">failed</div><div class="test-duration">0.001s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: true
+Received: false
+    at Object.toBe (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/TreinoDao.unit.test.js:239:30)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">TreinoDao - testes unitários &gt; removerVinculoExercicio</div><div class="test-title">deve retornar falso quando nenhuma linha deletada</div><div class="test-status">failed</div><div class="test-duration"> </div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(received).toMatch(expected)
+
+Expected pattern: /Nenhuma linha deletada/
+Received string:  "Erro inesperado ao deletar exercicio de treino"
+    at Object.toMatch (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/TreinoDao.unit.test.js:252:31)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</pre></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">TreinoDao - testes unitários &gt; removerVinculoExercicio</div><div class="test-title">deve retornar erro em caso de exceção</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div></div></details><details id="suite-20" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/TreinoService.unit.test.js</div><div class="suite-time">0.598s</div></summary><div class="suite-tests"><div class="test-result passed"><div class="test-info"><div class="test-suitename">TreinoService - Unitários extendidos</div><div class="test-title">criarTreino lança erro se dados inválidos</div><div class="test-status">passed</div><div class="test-duration">0.035s</div></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">TreinoService - Unitários extendidos</div><div class="test-title">vincularExercicios lança erro se resultado DAO é falha</div><div class="test-status">failed</div><div class="test-duration">0.015s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(received).rejects.toThrow(expected)
+
+Expected pattern: /Falha inesperada ao vincular/
+Received message: "Cannot read properties of undefined (reading 'sucesso')"
+
+      284 |
+      285 |     retornouSucesso(resultado){
+    &gt; 286 |         if(!resultado.sucesso){
+          |                       ^
+      287 |             return false;
+      288 |         }
+      289 |         return true;
+
+      at TreinoService.sucesso [as retornouSucesso] (service/TreinoService.js:286:23)
+      at TreinoService.retornouSucesso [as validaResultadoDao] (service/TreinoService.js:206:18)
+      at TreinoService.validaResultadoDao (service/TreinoService.js:154:14)
+      at Object.&lt;anonymous&gt; (teste/TreinoService.unit.test.js:35:5)
+    at Object.toThrow (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/expect/build/index.js:218:22)
+    at Object.toThrow (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/TreinoService.unit.test.js:35:62)
+    at Promise.then.completed (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:252:3)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:126:9)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:121:9)
+    at run (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/testWorker.js:106:12)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">TreinoService - Unitários extendidos</div><div class="test-title">adicionarExercicios chama vincular e valida dados</div><div class="test-status">failed</div><div class="test-duration">0.002s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(received).resolves.not.toThrow()
+
+Received promise rejected instead of resolved
+Rejected to value: [TypeError: Cannot read properties of undefined (reading 'sucesso')]
+    at expect (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/expect/build/index.js:113:15)
+    at Object.expect (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/TreinoService.unit.test.js:44:11)
+    at Promise.then.completed (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:252:3)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:126:9)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:121:9)
+    at run (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/testWorker.js:106:12)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">TreinoService - Unitários extendidos</div><div class="test-title">removerExercicios chama dao remover e valida resultado</div><div class="test-status">failed</div><div class="test-duration">0.001s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(received).resolves.not.toThrow()
+
+Received promise rejected instead of resolved
+Rejected to value: [TypeError: Cannot read properties of undefined (reading 'sucesso')]
+    at expect (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/expect/build/index.js:113:15)
+    at Object.expect (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/TreinoService.unit.test.js:53:11)
+    at Promise.then.completed (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:252:3)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:126:9)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:121:9)
+    at run (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/testWorker.js:106:12)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">TreinoService - Unitários extendidos</div><div class="test-title">buscarPorId lança erro se dao retornar falha</div><div class="test-status">failed</div><div class="test-duration">0.006s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(received).rejects.toThrow(expected)
+
+Expected pattern: /Falha inesperada/
+Received message: "Cannot read properties of undefined (reading 'sucesso')"
+
+      284 |
+      285 |     retornouSucesso(resultado){
+    &gt; 286 |         if(!resultado.sucesso){
+          |                       ^
+      287 |             return false;
+      288 |         }
+      289 |         return true;
+
+      at TreinoService.sucesso [as retornouSucesso] (service/TreinoService.js:286:23)
+      at TreinoService.retornouSucesso [as validaResultadoDao] (service/TreinoService.js:206:18)
+      at TreinoService.validaResultadoDao [as buscarPorId] (service/TreinoService.js:66:14)
+      at Object.&lt;anonymous&gt; (teste/TreinoService.unit.test.js:58:5)
+    at Object.toThrow (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/expect/build/index.js:218:22)
+    at Object.toThrow (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/TreinoService.unit.test.js:58:50)
+    at Promise.then.completed (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:252:3)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:126:9)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:121:9)
+    at run (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/testWorker.js:106:12)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">TreinoService - Unitários extendidos</div><div class="test-title">buscarPorId busca nota e comentarios, e fecha conexao</div><div class="test-status">failed</div><div class="test-duration">0.003s</div></div><div class="failureMessages"> <pre class="failureMsg">TypeError: Cannot read properties of undefined (reading 'sucesso')
+    at TreinoService.sucesso [as retornouSucesso] (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/service/TreinoService.js:286:23)
+    at TreinoService.retornouSucesso [as validaResultadoDao] (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/service/TreinoService.js:206:18)
+    at TreinoService.validaResultadoDao [as buscarPorId] (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/service/TreinoService.js:66:14)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at Object.&lt;anonymous&gt; (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/TreinoService.unit.test.js:69:20)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">TreinoService - Unitários extendidos</div><div class="test-title">listarTreinos associa nota ao treino</div><div class="test-status">failed</div><div class="test-duration">0.001s</div></div><div class="failureMessages"> <pre class="failureMsg">TypeError: Cannot read properties of undefined (reading 'sucesso')
+    at TreinoService.sucesso [as retornouSucesso] (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/service/TreinoService.js:286:23)
+    at TreinoService.retornouSucesso [as validaResultadoDao] (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/service/TreinoService.js:206:18)
+    at TreinoService.validaResultadoDao [as buscarTreinos] (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/service/TreinoService.js:122:14)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at TreinoService.listarTreinos (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/service/TreinoService.js:92:23)
+    at Object.&lt;anonymous&gt; (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/TreinoService.unit.test.js:84:21)</pre></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">TreinoService - Unitários extendidos</div><div class="test-title">validarDadosCadastro, validarDadosVinculoExercicios e validarDadosParaAtualizar lançam erro para dados inválidos</div><div class="test-status">passed</div><div class="test-duration">0.005s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">TreinoService - Unitários extendidos</div><div class="test-title">idValido retorna false para valores inválidos</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">TreinoService - Unitários extendidos</div><div class="test-title">retornouSucesso e possuiErro funcionam corretamente</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">TreinoService - Unitários extendidos</div><div class="test-title">listaExercicioValido retorna false para lista vazia</div><div class="test-status">passed</div><div class="test-duration">0.013s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">TreinoService - Unitários extendidos</div><div class="test-title">tituloValido e descricaoValida validam strings corretamente</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">TreinoService - Unitários extendidos</div><div class="test-title">adicionarExercicios lança erro com id inválido</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">TreinoService - Unitários extendidos</div><div class="test-title">removerExercicios lança erro se lista de exercicios vazia</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">TreinoService - Unitários extendidos</div><div class="test-title">validaResultadoDao não lança erro se resultado sucesso true</div><div class="test-status">passed</div><div class="test-duration"> </div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">TreinoService - Unitários extendidos</div><div class="test-title">toArrayOfExercicioModel com lista vazia retorna lista vazia</div><div class="test-status">passed</div><div class="test-duration">0.002s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">TreinoService - Unitários extendidos</div><div class="test-title">idValido retorna false para valores inválidos</div><div class="test-status">passed</div><div class="test-duration"> </div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">TreinoService - Unitários extendidos</div><div class="test-title">buscarPorId lida com dao rejeitando</div><div class="test-status">passed</div><div class="test-duration">0.002s</div></div></div></div></details><details id="suite-21" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/ClienteService.unit.test.js</div><div class="suite-time">0.607s</div></summary><div class="suite-tests"><div class="test-result failed"><div class="test-info"><div class="test-suitename">ClienteService - Testes Unitários &gt; autenticar</div><div class="test-title">deve retornar cliente quando credenciais corretas</div><div class="test-status">failed</div><div class="test-duration">0.009s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+Expected: "teste@teste.com"
+
+Number of calls: 0
+    at Object.toHaveBeenCalledWith (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/ClienteService.unit.test.js:33:34)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</pre></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">ClienteService - Testes Unitários &gt; autenticar</div><div class="test-title">deve retornar false se cliente não encontrado</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">ClienteService - Testes Unitários &gt; autenticar</div><div class="test-title">deve retornar false se senha não corresponde</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">ClienteService - Testes Unitários &gt; novoCliente</div><div class="test-title">deve criar cliente e retornar objeto com código</div><div class="test-status">failed</div><div class="test-duration">0.001s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: Falha inesperada ao realizar cadastro
+    at ClienteService.novoCliente (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/service/ClienteService.js:84:19)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at Object.&lt;anonymous&gt; (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/ClienteService.unit.test.js:68:29)</pre></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">ClienteService - Testes Unitários &gt; novoCliente</div><div class="test-title">deve remover foto e lançar erro se falhar na validação</div><div class="test-status">passed</div><div class="test-duration">0.002s</div></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">ClienteService - Testes Unitários &gt; deletarCliente</div><div class="test-title">deve deletar cliente e remover foto</div><div class="test-status">failed</div><div class="test-duration">0.001s</div></div><div class="failureMessages"> <pre class="failureMsg">TypeError: object is not iterable (cannot read property Symbol(Symbol.iterator))
+    at ClienteService.deletarCliente (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/service/ClienteService.js:40:26)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at Object.&lt;anonymous&gt; (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/ClienteService.unit.test.js:95:22)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">ClienteService - Testes Unitários &gt; deletarCliente</div><div class="test-title">deve lançar erro se cliente não encontrado</div><div class="test-status">failed</div><div class="test-duration">0.015s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(received).rejects.toThrow(expected)
+
+Expected substring: "Cliente não encontrado!"
+Received message:   "object is not iterable (cannot read property Symbol(Symbol.iterator))"
+
+      38 |     async deletarCliente(codigo){
+      39 |         const dao = new ClienteDao();
+    &gt; 40 |         const [ cliente ] = ClienteModel.fromDatabase(await dao.buscarPorId(codigo)); 
+         |                          ^
+      41 |         
+      42 |         if(!cliente){
+      43 |             throw new Error('Cliente não encontrado!');
+
+      at ClienteService.deletarCliente (service/ClienteService.js:40:26)
+      at Object.&lt;anonymous&gt; (teste/ClienteService.unit.test.js:106:7)
+    at Object.toThrow (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/expect/build/index.js:218:22)
+    at Object.toThrow (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/ClienteService.unit.test.js:106:56)
+    at Promise.then.completed (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:252:3)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:126:9)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:121:9)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:121:9)
+    at run (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/testWorker.js:106:12)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">ClienteService - Testes Unitários &gt; deletarCliente</div><div class="test-title">deve retornar false se deleção falhar</div><div class="test-status">failed</div><div class="test-duration">0.001s</div></div><div class="failureMessages"> <pre class="failureMsg">TypeError: object is not iterable (cannot read property Symbol(Symbol.iterator))
+    at ClienteService.deletarCliente (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/service/ClienteService.js:40:26)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at Object.&lt;anonymous&gt; (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/ClienteService.unit.test.js:116:22)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">ClienteService - Testes Unitários &gt; atualizarCliente</div><div class="test-title">deve atualizar cliente e remover foto antiga</div><div class="test-status">failed</div><div class="test-duration">0.001s</div></div><div class="failureMessages"> <pre class="failureMsg">ReferenceError: adminModel is not defined
+    at ClienteService.adminModel [as atualizarCliente] (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/service/ClienteService.js:115:37)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at Object.&lt;anonymous&gt; (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/ClienteService.unit.test.js:136:22)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">ClienteService - Testes Unitários &gt; atualizarCliente</div><div class="test-title">deve remover foto do cliente novo se atualizar falhar</div><div class="test-status">failed</div><div class="test-duration">0.001s</div></div><div class="failureMessages"> <pre class="failureMsg">ReferenceError: adminModel is not defined
+    at ClienteService.adminModel [as atualizarCliente] (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/service/ClienteService.js:115:37)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at Object.&lt;anonymous&gt; (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/ClienteService.unit.test.js:155:7)</pre></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">ClienteService - Testes Unitários &gt; validaDadosCadastrais</div><div class="test-title">deve lançar erro para email vazio</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">ClienteService - Testes Unitários &gt; validaDadosCadastrais</div><div class="test-title">deve lançar erro para senha vazia</div><div class="test-status">passed</div><div class="test-duration">0.003s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">ClienteService - Testes Unitários &gt; validaDadosCadastrais</div><div class="test-title">deve lançar erro para nome vazio</div><div class="test-status">passed</div><div class="test-duration">0.004s</div></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">ClienteService - Testes Unitários &gt; validaDadosCadastrais</div><div class="test-title">deve lançar erro para email já cadastrado</div><div class="test-status">failed</div><div class="test-duration">0.012s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(received).rejects.toThrow(expected)
+
+Expected substring: "Email já cadastrado no sistema!"
+Received message:   "Email inválido!"
+
+      143 |
+      144 |         if(!FuncoesUtil.emailValido(cliente.email)){
+    &gt; 145 |             throw new Error("Email inválido!");
+          |                   ^
+      146 |         }
+      147 |     }
+      148 |
+
+      at ClienteService.validaDadosCadastrais (service/ClienteService.js:145:19)
+      at Object.&lt;anonymous&gt; (teste/ClienteService.unit.test.js:178:7)
+    at Object.toThrow (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/expect/build/index.js:218:22)
+    at Object.toThrow (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/ClienteService.unit.test.js:178:109)
+    at Promise.then.completed (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:252:3)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:126:9)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:121:9)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:121:9)
+    at run (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/testWorker.js:106:12)</pre></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">ClienteService - Testes Unitários &gt; validaDadosCadastrais</div><div class="test-title">deve lançar erro para email inválido</div><div class="test-status">passed</div><div class="test-duration">0.002s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">ClienteService - Testes Unitários &gt; validarDadosParaAtualizar</div><div class="test-title">deve lançar erro para email vazio</div><div class="test-status">passed</div><div class="test-duration">0.008s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">ClienteService - Testes Unitários &gt; validarDadosParaAtualizar</div><div class="test-title">deve lançar erro para senha vazia</div><div class="test-status">passed</div><div class="test-duration">0.006s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">ClienteService - Testes Unitários &gt; validarDadosParaAtualizar</div><div class="test-title">deve lançar erro para nome vazio</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">ClienteService - Testes Unitários &gt; validarDadosParaAtualizar</div><div class="test-title">deve lançar erro para email inválido</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">ClienteService - Testes Unitários &gt; validarDadosParaAtualizar</div><div class="test-title">deve lançar erro para senha inválida</div><div class="test-status">failed</div><div class="test-duration">0.01s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(received).toThrow(expected)
+
+Expected substring: "Senha ultrapassou máximo de caracteres!"
+Received message:   "Email inválido!"
+
+      165 |
+      166 |         if(!FuncoesUtil.emailValido(cliente.email)){
+    &gt; 167 |             throw new Error("Email inválido!");
+          |                   ^
+      168 |         }
+      169 |
+      170 |         if(this.senhaInvalida(cliente.senha)){
+
+      at ClienteService.validarDadosParaAtualizar (service/ClienteService.js:167:19)
+      at validarDadosParaAtualizar (teste/ClienteService.unit.test.js:207:28)
+      at Object.&lt;anonymous&gt; (node_modules/expect/build/toThrowMatchers.js:74:11)
+      at Object.throwingMatcher [as toThrow] (node_modules/expect/build/index.js:320:21)
+      at Object.toThrow (teste/ClienteService.unit.test.js:207:114)
+    at Object.toThrow (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/ClienteService.unit.test.js:207:114)
+    at Promise.then.completed (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:252:3)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:126:9)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:121:9)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:121:9)
+    at run (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/testWorker.js:106:12)</pre></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">ClienteService - Testes Unitários &gt; validaDadosLogin</div><div class="test-title">deve lançar erro para email vazio</div><div class="test-status">passed</div><div class="test-duration">0.004s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">ClienteService - Testes Unitários &gt; validaDadosLogin</div><div class="test-title">deve lançar erro para email inválido</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">ClienteService - Testes Unitários &gt; validaDadosLogin</div><div class="test-title">deve lançar erro para senha vazia</div><div class="test-status">failed</div><div class="test-duration">0.004s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(received).toThrow(expected)
+
+Expected substring: "Senha deve estar preenchida!"
+Received message:   "Email inválido!"
+
+      179 |         
+      180 |         if(this.emailInvalido(email)){
+    &gt; 181 |             throw new Error("Email inválido!");
+          |                   ^
+      182 |         }
+      183 |         
+      184 |         if(this.senhaVazia(senha)){
+
+      at ClienteService.validaDadosLogin (service/ClienteService.js:181:19)
+      at validaDadosLogin (teste/ClienteService.unit.test.js:222:28)
+      at Object.&lt;anonymous&gt; (node_modules/expect/build/toThrowMatchers.js:74:11)
+      at Object.throwingMatcher [as toThrow] (node_modules/expect/build/index.js:320:21)
+      at Object.toThrow (teste/ClienteService.unit.test.js:222:61)
+    at Object.toThrow (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/ClienteService.unit.test.js:222:61)
+    at Promise.then.completed (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:252:3)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:126:9)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:121:9)
+    at _runTestsForDescribeBlock (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:121:9)
+    at run (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/jest-runner/build/testWorker.js:106:12)</pre></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">ClienteService - Testes Unitários &gt; dadosCorrespondem</div><div class="test-title">retorna false se cliente for null</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">ClienteService - Testes Unitários &gt; dadosCorrespondem</div><div class="test-title">retorna false se senha for diferente</div><div class="test-status">passed</div><div class="test-duration"> </div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">ClienteService - Testes Unitários &gt; dadosCorrespondem</div><div class="test-title">retorna true se senha coincide</div><div class="test-status">passed</div><div class="test-duration"> </div></div></div></div></details><details id="suite-22" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/ComentarioDao.int.test.js</div><div class="suite-time">0.202s</div></summary><div class="suite-tests"><div class="test-result failed"><div class="test-info"><div class="test-suitename">ComentarioDao - Integração</div><div class="test-title">inserirComentario deve inserir no banco e retornar um insertId</div><div class="test-status">failed</div><div class="test-duration">0.041s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: Cannot add or update a child row: a foreign key constraint fails (`fittrack`.`comentario`, CONSTRAINT `comentario_ibfk_1` FOREIGN KEY (`cliente`) REFERENCES `cliente` (`cod_cli`))
+    at PromiseConnection.query (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/mysql2/lib/promise/connection.js:29:22)
+    at ComentarioDao.query [as inserirComentario] (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/dao/ComentarioDao.js:8:47)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at Object.&lt;anonymous&gt; (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/ComentarioDao.int.test.js:29:22)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">ComentarioDao - Integração</div><div class="test-title">listarPorTreino deve retornar os comentários inseridos</div><div class="test-status">failed</div><div class="test-duration">0.007s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(received).toBeGreaterThan(expected)
+
+Expected: &gt; 0
+Received:   0
+    at Object.toBeGreaterThan (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/ComentarioDao.int.test.js:40:32)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</pre></div></div></div></details><details id="suite-23" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/TreinoService.int.test.js</div><div class="suite-time">0.597s</div></summary><div class="suite-tests"><div class="test-result failed"><div class="test-info"><div class="test-suitename">TreinoService - Integração ampliada</div><div class="test-title">criarTreino, buscarPorId, atualizarTreino e listarTreinos integrados</div><div class="test-status">failed</div><div class="test-duration">0.083s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: Falha inesperada ao vincular exercicios ao treino: Houve algum erro durante execução
+    at TreinoService.Error [as jogarErro] (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/service/TreinoService.js:278:15)
+    at TreinoService.jogarErro [as validaResultadoDao] (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/service/TreinoService.js:211:18)
+    at TreinoService.validaResultadoDao [as criarTreino] (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/service/TreinoService.js:141:14)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at Object.&lt;anonymous&gt; (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/TreinoService.int.test.js:18:26)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">TreinoService - Integração ampliada</div><div class="test-title">adicionarExercicios e removerExercicios funcionam corretamente</div><div class="test-status">failed</div><div class="test-duration">0.012s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: Falha inesperada ao vincular exercicios ao treino: Houve algum erro durante execução
+    at TreinoService.Error [as jogarErro] (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/service/TreinoService.js:278:15)
+    at TreinoService.jogarErro [as validaResultadoDao] (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/service/TreinoService.js:211:18)
+    at TreinoService.validaResultadoDao [as criarTreino] (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/service/TreinoService.js:141:14)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at Object.&lt;anonymous&gt; (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/TreinoService.int.test.js:51:26)</pre></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">TreinoService - Integração ampliada</div><div class="test-title">buscarPorId lança erro para id inválido ou treino inexistente</div><div class="test-status">passed</div><div class="test-duration">0.008s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">TreinoService - Integração ampliada</div><div class="test-title">criarTreino lança erro para dados inválidos</div><div class="test-status">passed</div><div class="test-duration">0.002s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">TreinoService - Integração ampliada</div><div class="test-title">adicionarExercicios lança erro para id inválido ou dados inválidos</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">TreinoService - Integração ampliada</div><div class="test-title">atualizarTreino lança erro para dados inválidos</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">TreinoService - Integração ampliada</div><div class="test-title">validaResultadoDao lança erro e loga erro</div><div class="test-status">passed</div><div class="test-duration">0.003s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">TreinoService - Integração ampliada</div><div class="test-title">metodos utilitários retornam valores corretos</div><div class="test-status">passed</div><div class="test-duration">0.002s</div></div></div></div><div class="suite-consolelog"><div class="suite-consolelog-header">Console Log</div><div class="suite-consolelog-item"><pre class="suite-consolelog-item-origin">    at TreinoService.log (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/service/TreinoService.js:282:17)
+    at TreinoService.log [as validaResultadoDao] (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/service/TreinoService.js:208:22)
+    at TreinoService.validaResultadoDao [as criarTreino] (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/service/TreinoService.js:141:14)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at Object.&lt;anonymous&gt; (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/TreinoService.int.test.js:18:26)</pre><pre class="suite-consolelog-item-message">Error: Field 'capa_tre' doesn't have a default value
+    at PromiseConnection.query (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/mysql2/lib/promise/connection.js:29:22)
+    at TreinoDao.query [as inserir] (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/dao/TreinoDao.js:119:60)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at TreinoService.criarTreino (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/service/TreinoService.js:139:27)
+    at Object.&lt;anonymous&gt; (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/TreinoService.int.test.js:18:26) {
+  code: 'ER_NO_DEFAULT_FOR_FIELD',
+  errno: 1364,
+  sql: "INSERT INTO treino(descricao_tre, titulo_tre) values ('Treino integração teste','Treino teste');",
+  sqlState: 'HY000',
+  sqlMessage: "Field 'capa_tre' doesn't have a default value"
+}</pre></div><div class="suite-consolelog-item"><pre class="suite-consolelog-item-origin">    at TreinoService.log (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/service/TreinoService.js:282:17)
+    at TreinoService.log [as validaResultadoDao] (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/service/TreinoService.js:208:22)
+    at TreinoService.validaResultadoDao [as criarTreino] (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/service/TreinoService.js:141:14)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at Object.&lt;anonymous&gt; (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/TreinoService.int.test.js:51:26)</pre><pre class="suite-consolelog-item-message">Error: Field 'capa_tre' doesn't have a default value
+    at PromiseConnection.query (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/node_modules/mysql2/lib/promise/connection.js:29:22)
+    at TreinoDao.query [as inserir] (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/dao/TreinoDao.js:119:60)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at TreinoService.criarTreino (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/service/TreinoService.js:139:27)
+    at Object.&lt;anonymous&gt; (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/TreinoService.int.test.js:51:26) {
+  code: 'ER_NO_DEFAULT_FOR_FIELD',
+  errno: 1364,
+  sql: "INSERT INTO treino(descricao_tre, titulo_tre) values ('Teste para adicionar e remover','Adicionar remover teste');",
+  sqlState: 'HY000',
+  sqlMessage: "Field 'capa_tre' doesn't have a default value"
+}</pre></div></div></details><details id="suite-24" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/AdministradorService.int.test.js</div><div class="suite-time">0.626s</div></summary><div class="suite-tests"><div class="test-result passed"><div class="test-info"><div class="test-suitename">AdministradorService - Integração</div><div class="test-title">criarNovoAdministrador - sucesso</div><div class="test-status">passed</div><div class="test-duration">0.064s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">AdministradorService - Integração</div><div class="test-title">autenticar - administrador existente com senha correta</div><div class="test-status">passed</div><div class="test-duration">0.032s</div></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">AdministradorService - Integração</div><div class="test-title">deletarAdministrador - remove admin existente</div><div class="test-status">failed</div><div class="test-duration">0.017s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: true
+Received: false
+    at Object.toBe (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/AdministradorService.int.test.js:61:23)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</pre></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">AdministradorService - Integração</div><div class="test-title">consultarTodos - deve retornar array</div><div class="test-status">passed</div><div class="test-duration">0.004s</div></div></div></div></details><details id="suite-25" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/ClienteService.int.test.js</div><div class="suite-time">0.661s</div></summary><div class="suite-tests"><div class="test-result failed"><div class="test-info"><div class="test-suitename">ClienteService - Testes de Integração</div><div class="test-title">novoCliente cria cliente real no banco</div><div class="test-status">failed</div><div class="test-duration">0.066s</div></div><div class="failureMessages"> <pre class="failureMsg">TypeError: Cannot read properties of undefined (reading 'startsWith')
+    at Object.startsWith (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/ClienteService.int.test.js:19:19)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">ClienteService - Testes de Integração</div><div class="test-title">autenticar com cliente real</div><div class="test-status">failed</div><div class="test-duration">0.026s</div></div><div class="failureMessages"> <pre class="failureMsg">TypeError: Cannot read properties of undefined (reading 'startsWith')
+    at Object.startsWith (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/ClienteService.int.test.js:19:19)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">ClienteService - Testes de Integração</div><div class="test-title">deletarCliente remove cliente</div><div class="test-status">failed</div><div class="test-duration">0.02s</div></div><div class="failureMessages"> <pre class="failureMsg">TypeError: dados.forEach is not a function
+    at Function.forEach [as fromDatabase] (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/model/ClienteModel.js:69:15)
+    at ClienteService.fromDatabase [as buscarPorEmail] (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/service/ClienteService.js:33:42)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at Object.&lt;anonymous&gt; (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/ClienteService.int.test.js:82:19)</pre><pre class="failureMsg">TypeError: Cannot read properties of undefined (reading 'startsWith')
+    at Object.startsWith (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/ClienteService.int.test.js:19:19)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">ClienteService - Testes de Integração</div><div class="test-title">atualizarCliente altera dados no banco</div><div class="test-status">failed</div><div class="test-duration">0.022s</div></div><div class="failureMessages"> <pre class="failureMsg">TypeError: Cannot read properties of undefined (reading 'startsWith')
+    at Object.startsWith (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/ClienteService.int.test.js:19:19)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</pre></div></div></div></details><details id="suite-26" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/TreinoDao.int.test.js</div><div class="suite-time">0.197s</div></summary><div class="suite-tests"><div class="test-result passed"><div class="test-info"><div class="test-suitename">TreinoDao - Testes de Integração</div><div class="test-title">buscarPorId retorna treino se existir</div><div class="test-status">passed</div><div class="test-duration">0.013s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">TreinoDao - Testes de Integração</div><div class="test-title">buscarPorId retorna falso para id inexistente</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">TreinoDao - Testes de Integração</div><div class="test-title">inserir adiciona novo treino e retorna novoId</div><div class="test-status">failed</div><div class="test-duration">0.001s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: true
+Received: false
+    at Object.toBe (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/TreinoDao.int.test.js:32:31)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">TreinoDao - Testes de Integração</div><div class="test-title">atualizar modifica treino existente</div><div class="test-status">failed</div><div class="test-duration"> </div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: true
+Received: false
+    at Object.toBe (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/TreinoDao.int.test.js:52:31)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">TreinoDao - Testes de Integração</div><div class="test-title">deletar remove treino existente</div><div class="test-status">failed</div><div class="test-duration">0.001s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: true
+Received: false
+    at Object.toBe (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/TreinoDao.int.test.js:67:31)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">TreinoDao - Testes de Integração</div><div class="test-title">vincularExercicios insere vínculos</div><div class="test-status">failed</div><div class="test-duration"> </div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: true
+Received: false
+    at Object.toBe (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/TreinoDao.int.test.js:81:31)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">TreinoDao - Testes de Integração</div><div class="test-title">removerVinculoExercicio remove vínculos</div><div class="test-status">failed</div><div class="test-duration">0.001s</div></div><div class="failureMessages"> <pre class="failureMsg">Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: true
+Received: false
+    at Object.toBe (/home/fernando/projetos/projetos_faculdade/node_projects/FitTrack/teste/TreinoDao.int.test.js:101:31)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</pre></div></div></div></details></main></body></html>

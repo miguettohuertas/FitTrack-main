@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Dashboard</title>
+  <style>
+    h4{
+      color: blue;
+    }
+  </style>
+
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+ 
+</head>
+
+<body class="bg-blue-900 p-0 h-screen w-full">
+  <div class="bg-orange-600 w-full p-0 m-0 h-[5%] relative">
+    <div class="flex w-full h-full items-center justify-end relative">
+      <div id="menuUsuario" class="flex items-center cursor-pointer relative">
+        <!-- Seta -->
+        <div class="mr-4 w-0 h-0 border-l-8 border-r-8 border-t-8 border-l-transparent border-r-transparent border-t-white transition-transform duration-300" id="arrow"></div>
+
+        <!-- Nome -->
+        <h1 class="text-white font-bold text-lg mr-2"><%= cliente.nome %></h1>
+
+        <!-- Avatar -->
+        <a href="/perfil">
+          <img class="p-1 m-2 rounded-full bg-white w-[32px] h-[32px]" src="<%= cliente.foto %>" alt="Perfil">
+        </a>
+
+        <!-- Dropdown menu -->
+        <div id="dropdownMenu" class="absolute right-0 top-full mt-2 w-48 bg-white rounded shadow-lg hidden z-50">
+          <a href="/dashboard" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:rounded">Inicio</a>
+          <a href="/perfil" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:rounded">Perfil</a>
+          <!-- <a href="/historico" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Histórico de Treinos</a> -->
+          <a href="/logout" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:rounded">Sair</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <% 
+    categorias.forEach( function(categoria){ 
+      const treinosPorCategoria = treinos.filter(treino =>
+        treino.exercicios.some(exe =>
+          exe.categorias.some(cat => cat.codigo === categoria.codigo)
+        )
+      );   
+
+      if(treinosPorCategoria.length > 0){
+  %>
+  
+  
+    <div class="w-full py-2 my-4">
+      <h1 class="ml-2 text-xl text-white font-bold"><%= categoria.titulo %></h1>
+      <div class="flex flex-row overflow-x-auto w-full" style="scrollbar-width: none;" id="scrollContainer">
+        <% treinosPorCategoria.forEach(function(treino) { %>
+          <div class=" shadow-md rounded-lg p-4 max-w-sm w-64 flex-shrink-0 mx-2">
+            <a href="/treino/<%= treino.codigo %>">
+              <div class="flex items-end justify-center rounded-lg">
+                <img class="rounded rounded-xl block mx-auto w-42 h-64" src="<%= treino.capa %>"/>            
+              </div>
+                
+              <div class="flex justify-center space-x-1 mt-2">
+                <% for (let i = 1; i <= 5; i++) { %>
+                  <% if (i <= treino.avaliacao) { %>
+                    <!-- Estrela preenchida -->
+                    <svg class="w-5 h-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.963h4.162c.969 0 1.371 1.24.588 1.81l-3.37 2.448 1.286 3.963c.3.921-.755 1.688-1.54 1.118L10 13.348l-3.37 2.448c-.785.57-1.84-.197-1.54-1.118l1.286-3.963-3.37-2.448c-.784-.57-.38-1.81.588-1.81h4.162L9.05 2.927z" />
+                    </svg>
+                  <% } else if (treino.avaliacao !== null) { %>
+                    <!-- Estrela vazia -->
+                    <svg class="w-5 h-5 text-gray-300" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.963h4.162c.969 0 1.371 1.24.588 1.81l-3.37 2.448 1.286 3.963c.3.921-.755 1.688-1.54 1.118L10 13.348l-3.37 2.448c-.785.57-1.84-.197-1.54-1.118l1.286-3.963-3.37-2.448c-.784-.57-.38-1.81.588-1.81h4.162L9.05 2.927z" />
+                    </svg>
+                  <% } %>
+                <% } %>
+              </div>
+              <h4 class="text-lg font-semibold mb-2 text-center text-white"><%= treino.titulo %></h4>
+            </a>
+          </div> 
+        <% });%>
+      </div>
+    </div>
+  <% }}); %>
+
+
+        
+  <script>
+    function scrollLeft() {
+      document.getElementById("scrollContainer").scrollBy({ left: -300, behavior: "smooth" });
+    }
+    function scrollRight() {
+      document.getElementById("scrollContainer").scrollBy({ left: 300, behavior: "smooth" });
+    }
+
+    const menuUsuario = document.getElementById('menuUsuario');
+    const dropdown = document.getElementById('dropdownMenu');
+    const arrow = document.getElementById('arrow');
+
+    menuUsuario.addEventListener('click', () => {
+      dropdown.classList.toggle('hidden');
+      arrow.classList.toggle('rotate-180'); // Gira a seta
+    });
+
+    // (Opcional) Fecha ao clicar fora
+    document.addEventListener('click', function (event) {
+      if (!menuUsuario.contains(event.target)) {
+        dropdown.classList.add('hidden');
+        arrow.classList.remove('rotate-180');
+      }
+    });
+  </script>
+</body>
+</html>

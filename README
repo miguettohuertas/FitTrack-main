@@ -1,0 +1,21 @@
+Trabalho sobre aplicativo de academia FitTrack.
+
+Autores: Luis Fernando Pereira
+         Miguel Angelo Dufloth
+
+Link do protótipo do figma: https://www.figma.com/design/LHGRpNWGQ8zb3AbdjtV8kF/FitTrack?node-id=0-1&t=w62C3P4ug4JVG4no-1
+
+Projeto feito com node e Express.
+rodar npm install antes de qualquer execução para baixar todas as bibliotecas.
+
+acesso a login de administrador em https://localhost:3000/admin/
+
+banco de dados em: historico_sql/fittrack10.sql
+
+Login de administrador para testes:
+   login: admin@gmail.com 
+   senha: 123
+
+Login de cliente para testes:
+   login: cliente@email.com 
+   senha: 123

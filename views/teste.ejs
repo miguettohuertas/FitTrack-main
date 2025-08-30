@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Teste Estrelas</title>
+  <style>
+    svg {
+        width: 2rem;
+        height: 2rem;
+      fill: gold;
+      margin-right: 5px;
+      cursor: pointer;
+      display: inline-block !important;
+
+    }
+  </style>
+</head>
+<body>
+  <h2>Avaliação</h2>
+  <div id="starRating"></div>
+  <p>Nota: <span id="ratingValue">0</span></p>
+
+  <script>
+    function createStars() {
+      const starContainer = document.getElementById('starRating');
+      const ratingValue = document.getElementById('ratingValue');
+      let selectedRating = 0;
+
+      for (let i = 1; i <= 5; i++) {
+        const star = document.createElement('svg');
+        star.setAttribute('viewBox', '0 0 20 20');
+        star.innerHTML = `<path d="M9.049 2.927c.3-.921 1.603-.921 
+          1.902 0l1.286 3.963h4.162c.969 0 1.371 
+          1.24.588 1.81l-3.37 2.448 1.286 
+          3.963c.3.921-.755 1.688-1.54 
+          1.118L10 13.348l-3.37 2.448c-.785.57-1.84-.197-1.54-1.118l1.286-3.963
+          -3.37-2.448c-.784-.57-.38-1.81.588-1.81
+          h4.162L9.05 2.927z" />`;
+
+        star.addEventListener('click', () => {
+          selectedRating = i;
+          ratingValue.textContent = selectedRating;
+        });
+
+        starContainer.appendChild(star);
+      }
+    }
+
+    createStars();
+  </script>
+</body>
+</html>

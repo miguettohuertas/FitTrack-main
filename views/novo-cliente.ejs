@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+    <head>
+        <meta charset="utf-8" />
+        <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+        
+        <title><%= titulo %></title>
+        <link rel='stylesheet' href='/stylesheets/style.css' />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.tailwindcss.com"></script>
+
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet" />
+        
+        <style>
+            body {
+                font-family: 'Roboto', sans-serif;
+                background-image: url("images/assets/background-login.png");
+            }
+        </style>
+    </head>
+
+    <body class="bg-blue-900 p-0 h-screen w-full flex items-center justify-center">
+        <div class="bg-white rounded-xl p-6 shadow-lg transform transition-all duration-300 scale-95 w-[400px]">    
+                        
+            <form id="cadastro_cliente" action="/cadastrar" method="POST" enctype="multipart/form-data">
+                
+                <div class="flex flex-col items-center justify-center p-4 bg-white rounded-b-xl">
+                    <img src="images/assets/Logo.png" alt="">
+                
+                    <div class="w-full m-2">
+                        <label for="nome" class="text-blue-600 font-bold">Nome</label>
+                        <input type="text" autocomplete="name" name="nome" id="nome" class="pl-1 w-full h-10 border border-blue-600 hover:border-blue-800 rounded focus:border-blue-800 focus:border-2 focus:outline-none" placeholder="Nome" required>
+                    </div>
+                    <div class="w-full m-2">
+                        <label for="email" class="text-blue-600 font-bold">Email</label>
+                        <input type="email" autocomplete="username" name="email" id="email" class="pl-1 w-full h-10 border border-blue-600 hover:border-blue-800 rounded focus:border-blue-800 focus:border-2 focus:outline-none" placeholder="Email" required>
+                    </div>
+                    <div class="w-full m-2">
+                        <label for="senha" class="text-blue-600 font-bold">Senha</label>
+                        <input type="password" name="senha" id="senha" autocomplete="new-password" class="pl-1 w-full h-10 border border-blue-600 hover:border-blue-800 rounded focus:border-blue-800 focus:border-2 focus:outline-none" placeholder="Senha" required>
+                    </div>
+                    <div class="w-full m-2">
+                        <label for="idade" class="text-blue-600 font-bold">Idade</label>
+                        <input type="number" name="idade" id="idade" class="pl-1 w-full h-10 border border-blue-600 hover:border-blue-800 rounded focus:border-blue-800 focus:border-2 focus:outline-none" placeholder="idade" required>
+                    </div>
+                    <div class="w-full m-2">
+                        <label for="peso" class="text-blue-600 font-bold">Peso</label>
+                        <input type="number" name="peso" id="peso" class="pl-1 w-full h-10 border border-blue-600 hover:border-blue-800 rounded focus:border-blue-800 focus:border-2 focus:outline-none" placeholder="Em Kg" required>
+                    </div>
+                    <div class="w-full m-2">
+                        <label for="sexo" class="text-blue-600 font-bold mr-2">Sexo</label>
+                        <select id="sexo" name="sexo" class="p-2 hover:bg-gray-100 border-2 border-blue-500 text-blue-600 focus:rounded focus:border-blue-600 rounded" required>
+                            <option value="M">Masculino</option>
+                            <option value="F">Feminino</option>
+                            <option value="O">Outro</option>
+                        </select>
+                    </div>
+
+                    
+                    <div class="m-2 w-full flex flex-col">                                                            
+                        <label for="foto%>" class="px-4 py-2 w-50 bg-blue-600 text-white text-center rounded cursor-pointer hover:bg-blue-700">
+                            Selecionar imagem
+                        </label>
+                        <input type="file" id="foto" name="foto" class="hidden" onchange="previewImage(event, 'preview')">
+
+                        <!-- Imagem clicável -->
+                        <div class="flex justify-center mt-2">
+                            <label for="foto" class="cursor-pointer">
+                                <img id="preview" hidden alt="Foto" class="w-32 h-32 object-cover rounded-lg border border-gray-400"/>
+                            </label>                                                        
+                        </div>
+                    </div>
+
+                    <div class="flex">
+                        <a href="/" class="mr-2">
+                            <button type="button" class="bg-blue-500 hover:bg-blue-600 py-2 px-3 text-white font-bold rounded">Voltar</button>
+                        </a>
+                        <button type="submit" class="px-4 py-2 mr-2 bg-green-500 text-white font-bold rounded hover:bg-green-600">
+                            Cadastrar
+                        </button>
+                    </div>
+                    
+                    <div id="resposta">
+                        <p id="mensagem_resposta"></p>
+                    </div>
+                </div>
+            </form>                                    
+        </div>
+        
+        <div id="overlay" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40"></div>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+        <script src="/javascript/imagem.js"></script>
+        <script src="/javascript/formulario.js"></script>
+
+        <script>
+            addFormListener('cadastro_cliente');
+            respostaFormularioComDiv();            
+        </script>
+    </body>
+</html>
