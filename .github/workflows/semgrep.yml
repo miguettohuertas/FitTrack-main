@@ -22,11 +22,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # PASSO 2: Executar a análise do Semgrep com a versão correta (@v1)
+      # PASSO 2: Executar a análise do Semgrep
       - name: Run Semgrep Scan
         uses: semgrep/semgrep-action@v1
 
-      # PASSO 3: Fazer o upload do relatório gerado
+      # PASSO NOVO (PARA DEBUG): Listar todos os arquivos para ver o que foi criado
+      - name: List files in the directory
+        run: ls -R
+
+      # PASSO 3: Fazer o upload do relatório
       - name: Upload SARIF file for GitHub Security Alerts
         uses: github/codeql-action/upload-sarif@v3
         with:
