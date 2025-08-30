@@ -1,38 +1,34 @@
-# Nome do Workflow
+# Name of the Workflow
 name: Semgrep Security Scan
 
-# Gatilhos: Roda em push e pull requests para as branches principais
+# Triggers: Runs on push and pull requests to the main branches
 on:
   push:
     branches: [ "main", "master" ]
   pull_request:
     branches: [ "main", "master" ]
 
-# Permissões necessárias para o workflow funcionar
+# Permissions required for the workflow to function
 permissions:
-  contents: read      # Permite ao workflow ler o código do seu repositório
-  security-events: write # Permite ao workflow enviar os resultados para a aba "Security"
+  contents: read      # Allows the workflow to read your repository's code
+  security-events: write # Allows the workflow to send results to the "Security" tab
 
 jobs:
   semgrep:
     name: Semgrep Scan
     runs-on: ubuntu-latest
     steps:
-      # PASSO 1: Baixar o código do seu repositório
+      # STEP 1: Check out your repository's code
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # PASSO 2: Executar a análise do Semgrep
+      # STEP 2 (The Baker): Run the Semgrep scan.
+      # This step will analyze your code and create the "semgrep.sarif" file.
       - name: Run Semgrep Scan
         uses: semgrep/semgrep-action@v1
 
-      # PASSO NOVO (PARA DEBUG): Listar todos os arquivos para ver o que foi criado
-      - name: List files in the directory
-        run: ls -R
-
-      # PASSO 3: Fazer o upload do relatório
+      # STEP 3 (The Delivery Driver): Upload the report generated in the previous step.
       - name: Upload SARIF file for GitHub Security Alerts
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: semgrep.sarif
-        if: always()
