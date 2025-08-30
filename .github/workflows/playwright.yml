@@ -1,9 +1,11 @@
 name: Playwright Tests
+
 on:
   push:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
+
 jobs:
   test:
     timeout-minutes: 60
@@ -12,13 +14,34 @@ jobs:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
       with:
-        node-version: lts/*
+        node-version: lts/* # lts/* é ótimo, vai usar a versão Node.js mais estável
+
     - name: Install dependencies
       run: npm ci
+
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
+
+    # --- INÍCIO DA CORREÇÃO ---
+
+    # NOVO PASSO 1: Iniciar o servidor da aplicação em segundo plano.
+    # O comando 'npm start' inicia seu app React. O '&' no final faz com que ele
+    # continue rodando em segundo plano para que o próximo passo possa ser executado.
+    - name: Start server in background
+      run: npm start &
+
+    # NOVO PASSO 2: Esperar até que a aplicação esteja pronta.
+    # O servidor leva alguns segundos para iniciar. Este comando espera até que
+    # a URL http://localhost:3000 esteja respondendo antes de continuar.
+    - name: Wait for server to be ready
+      run: npx wait-on http://localhost:3000
+
+    # --- FIM DA CORREÇÃO ---
+
     - name: Run Playwright tests
+      # Agora este passo vai funcionar, pois o servidor está no ar!
       run: npx playwright test
+
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
