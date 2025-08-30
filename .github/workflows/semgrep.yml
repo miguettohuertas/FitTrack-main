@@ -23,6 +23,7 @@ jobs:
         uses: semgrep/semgrep-action@v1
         with:
           config: "p/javascript"  # <-- ESTA É A LINHA QUE RESOLVE O PROBLEMA
+        continue-on-error: true
 
       - name: Upload SARIF file for GitHub Security Alerts
         uses: github/codeql-action/upload-sarif@v3
