@@ -15,21 +15,11 @@ jobs:
     name: Semgrep Scan
     runs-on: ubuntu-latest
     steps:
+      # PASSO 1: Baixar o código
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # PASSO CORRIGIDO: Executamos o Semgrep manualmente para controlar a saída
-      - name: Run Semgrep and Force Success
-        # Este comando executa a análise do Semgrep e salva o resultado em semgrep.sarif.
-        # O '|| true' no final é um truque do terminal que garante que o passo
-        # SEMPRE termine com sucesso, mesmo que o Semgrep encontre problemas.
-        run: |
-          docker run --rm -v "${PWD}:/src" returntocorp/semgrep-agent:v1 \
-            semgrep ci --sarif -o semgrep.sarif --config="p/javascript" || true
-
-      # O passo de upload agora vai funcionar, pois o passo anterior
-      # garantiu que o arquivo semgrep.sarif fosse criado.
-      - name: Upload SARIF file for GitHub Security Alerts
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: semgrep.sarif
+      # PASSO 2: Rodar o Semgrep e deixar ele cuidar de tudo
+      # Removemos o passo de upload. A própria ação do Semgrep fará isso.
+      - name: Run Semgrep Scan
+        uses: semgrep/semgrep-action@v1
