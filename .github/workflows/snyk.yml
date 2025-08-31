@@ -11,20 +11,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
           node-version: '18'
 
-      - name: Install dependencies
-        run: npm install
+      - name: Install Snyk CLI and snyk-to-html
+        run: |
+          npm install -g snyk snyk-to-html || true
+
+      - name: Authenticate Snyk
+        run: snyk auth ${{ secrets.SNYK_TOKEN }}
 
       - name: Run Snyk Test
         run: |
-          npm install -g snyk snyk-to-html
-          snyk auth ${{ secrets.SNYK_TOKEN }}
           snyk test --all-projects --json > report.json
           npx snyk-to-html -i report.json -o report.html
 
