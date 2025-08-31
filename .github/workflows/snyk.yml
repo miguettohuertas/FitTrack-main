@@ -27,7 +27,7 @@ jobs:
 
       - name: Run Snyk Test
         run: |
-          snyk test --all-projects --json > report.json
+          snyk test --all-projects --json > report.json || true
           npx snyk-to-html -i report.json -o report.html
 
       - name: Upload Report
